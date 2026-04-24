@@ -7,10 +7,13 @@
   "upload_source_maps": true,
   "compatibility_flags": ["nodejs_compat"],
   "routes": [
-    { "pattern": "rhezapaleva.org/secure", "zone_name": "rhezapaleva.org" },
-    { "pattern": "rhezapaleva.org/flags/*", "zone_name": "rhezapaleva.org" },
-    { "pattern": "rhezapaleva.org/flags-d1/*", "zone_name": "rhezapaleva.org" }
-  ],
+  { "pattern": "rhezapaleva.org/secure", "zone_name": "rhezapaleva.org" },
+  { "pattern": "rhezapaleva.org/flags/*", "zone_name": "rhezapaleva.org" },
+  { "pattern": "rhezapaleva.org/flags-d1/*", "zone_name": "rhezapaleva.org" },
+  { "pattern": "tunnel.rhezapaleva.org/secure", "zone_name": "rhezapaleva.org" },
+  { "pattern": "tunnel.rhezapaleva.org/flags/*", "zone_name": "rhezapaleva.org" },
+  { "pattern": "tunnel.rhezapaleva.org/flags-d1/*", "zone_name": "rhezapaleva.org" }
+],
   "d1_databases": [
     {
       "binding": "FLAGS_DB",
