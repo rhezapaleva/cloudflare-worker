@@ -127,7 +127,34 @@ The assessment demonstrates two different Cloudflare storage approaches:
 
 ### D1 `SQLITE_TOOBIG` workaround
 
-Large flag images (e.g. `gb-wls.png` at 144KB, `vi.png` at 152KB) exceed SQLite's maximum SQL statement length when base64-encoded inline. The solution is to use the D1 REST API with parameterized queries — the SQL string stays small (~80 chars) while the large data is passed as a bound parameter.
+Large flag images (e.g. `gb-wls.png` at 144KB base64, `vi.png` at 152KB base64) exceed SQLite's maximum SQL statement length when base64-encoded inline in SQL strings like:
+
+```sql
+-- This fails for large images — SQLITE_TOOBIG
+INSERT INTO flags VALUES ('VI', 'iVBORw0KGgo...152KB...', 'image/png');
+```
+
+The solution is to use the [D1 REST API](https://developers.cloudflare.com/d1/) with **parameterized queries**. Instead of embedding data in the SQL string, the base64 data is passed as a bound parameter:
+
+```javascript
+// insert_missing_flags.js — uses D1 HTTP API
+const resp = await fetch(
+  `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/query`,
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sql: "INSERT OR REPLACE INTO flags (country_code, flag_data, content_type) VALUES (?, ?, ?)",
+      params: [countryCode, base64Data, "image/png"],
+    }),
+  }
+);
+```
+
+The SQL statement itself is only ~80 characters — the large base64 data goes through the parameter binding mechanism, which bypasses SQLite's statement length limit. Each flag is inserted individually to avoid cumulative size issues.
 
 ### Cloudflare Access JWT
 
