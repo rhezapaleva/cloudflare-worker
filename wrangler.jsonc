@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cloudflare-worker",
+  "main": "src/index.js",
+  "compatibility_date": "2026-04-23",
+  "observability": { "enabled": true },
+  "upload_source_maps": true,
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "rhezapaleva.org/secure", "zone_name": "rhezapaleva.org" },
+    { "pattern": "rhezapaleva.org/flags/*", "zone_name": "rhezapaleva.org" },
+    { "pattern": "rhezapaleva.org/flags-d1/*", "zone_name": "rhezapaleva.org" }
+  ],
+  "d1_databases": [
+    {
+      "binding": "FLAGS_DB",
+      "database_name": "flags-db",
+      "database_id": "ccee72ad-be52-4fe4-a549-78625255efbb"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "FLAGS_BUCKET",
+      "bucket_name": "flags-bucket"
+    }
+  ]
+}
